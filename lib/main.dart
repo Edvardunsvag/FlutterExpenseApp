@@ -1,6 +1,11 @@
-import 'package:first_app/transaction.dart';
+import 'dart:ffi';
+
+import 'package:first_app/widgets/new_transaction.dart';
+import 'package:first_app/widgets/transaction_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'models/transaction.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,8 +23,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class _MyHomePageState extends StatelessWidget {
-  final List<Transactions> transactions = [
+class _MyHomePageState extends StatefulWidget {
+  @override
+  State<_MyHomePageState> createState() => _MyHomePageStateState();
+}
+
+class _MyHomePageStateState extends State<_MyHomePageState> {
+  final List<Transactions> _userTransactions = [
     Transactions(
       id: 't1',
       title: 'new shoes',
@@ -34,66 +44,54 @@ class _MyHomePageState extends StatelessWidget {
     ),
   ];
 
+  void _addNewTransaction(String txTitle, double txAmount) {
+    final newTx = Transactions(
+      title: txTitle,
+      amount: txAmount,
+      date: DateTime.now(),
+      id: DateTime.now().toString(),
+    );
+
+    setState(() {
+      _userTransactions.add(newTx);
+    });
+  }
+
+  void startAddNewTransaction(BuildContext ctx) {
+    showModalBottomSheet(
+        context: ctx,
+        builder: (_) {
+          return NewTransaction(_addNewTransaction);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Flutter App'),
-        ),
-        body: Column(
-          children: <Widget>[
-            const SizedBox(
-              width: double.infinity,
-              child: Card(
-                child: Text('Chart'),
-                elevation: 5,
-              ),
+      appBar: AppBar(
+        title: Text('Flutter App'),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () => startAddNewTransaction(context)),
+        ],
+      ),
+      body: Column(
+        children: <Widget>[
+          SizedBox(
+            width: double.infinity,
+            child: Card(
+              child: Text('Chart'),
+              elevation: 5,
             ),
-            Column(
-              children: transactions.map((tx) {
-                return Card(
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 15),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                          color: Colors.black,
-                          width: 2,
-                        )),
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          '\$: ${tx.amount}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.purple,
-                          ),
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            tx.title,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            DateFormat.yMMMd().format(tx.date),
-                            style: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                );
-              }).toList(),
-            )
-          ],
-        ));
+          ),
+          TransactionList(_userTransactions),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () => startAddNewTransaction(context)),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
   }
 }
