@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class NewTransaction extends StatefulWidget {
   final Function addTransaction;
 
-  NewTransaction(this.addTransaction);
+  const NewTransaction(this.addTransaction);
 
   @override
   State<NewTransaction> createState() => _NewTransactionState();
@@ -15,6 +15,7 @@ class _NewTransactionState extends State<NewTransaction> {
   final titleController = TextEditingController();
 
   void onSubmit() {
+    print("hello");
     final enteredTitle = titleController.text;
     final enteredAmount = double.parse(amountController.text);
 
@@ -57,7 +58,7 @@ class _NewTransactionState extends State<NewTransaction> {
             ),
             TextButton(
               // ignore: avoid_print
-              onPressed: () => {onSubmit},
+              onPressed: () => {onSubmit()},
               child: Text('Add transaction'),
             )
           ],
