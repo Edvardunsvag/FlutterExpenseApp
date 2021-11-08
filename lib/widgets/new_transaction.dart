@@ -71,7 +71,8 @@ class _NewTransactionState extends State<NewTransaction> {
             ),
             TextField(
               controller: amountController,
-              keyboardType: TextInputType.number,
+              keyboardType:
+                  TextInputType.numberWithOptions(signed: true, decimal: true),
               onSubmitted: (_) => onSubmit(),
               decoration: InputDecoration(
                 labelText: 'Amount',
