@@ -46,11 +46,12 @@ class _MyHomePageStateState extends State<_MyHomePageState> {
     }).toList();
   }
 
-  void _addNewTransaction(String txTitle, double txAmount) {
+  void _addNewTransaction(
+      String txTitle, double txAmount, DateTime chosenDate) {
     final newTx = Transactions(
       title: txTitle,
       amount: txAmount,
-      date: DateTime.now(),
+      date: chosenDate,
       id: DateTime.now().toString(),
     );
 
@@ -65,6 +66,12 @@ class _MyHomePageStateState extends State<_MyHomePageState> {
         builder: (_) {
           return NewTransaction(_addNewTransaction);
         });
+  }
+
+  void deleteTransaction(index) {
+    setState(() {
+      _userTransactions.removeAt(index);
+    });
   }
 
   @override
@@ -83,7 +90,7 @@ class _MyHomePageStateState extends State<_MyHomePageState> {
       body: Column(
         children: <Widget>[
           Chart(_recentTransactions),
-          TransactionList(_userTransactions),
+          TransactionList(_userTransactions, deleteTransaction),
         ],
       ),
       floatingActionButton: FloatingActionButton(
